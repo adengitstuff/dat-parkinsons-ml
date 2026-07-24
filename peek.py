@@ -60,5 +60,9 @@ print(df["max"].describe())
 print("\nfiles maxing out suspiciously low (<300, likely rescaled to 0-255):")
 print((df["max"] < 300).sum(), "out of", len(df))
 
+print(f" The new thing~~~~~~~~")
+df["low_max"] = df["max"] < 300
+print(df.groupby("low_max")["label"].agg(["count", "mean"]))
+
 df.to_csv("audit.csv", index=False)
 print("\nsaved full audit to audit.csv")
