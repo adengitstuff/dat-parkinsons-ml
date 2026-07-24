@@ -1,1 +1,9 @@
 venv/
+data/
+*.nii.gz
+niftis_extracted/
+*.zip
+*.tar.gz
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
