@@ -43,7 +43,7 @@ for f in files:  # full dataset now — 1362 files
         "mean": round(data.mean(), 1),
         "label": label.values[0] if len(label) else "MISSING",
     })
-
+00
 df = pd.DataFrame(rows)
 
 # group into a rough "acquisition cluster" by shape + spacing signature
