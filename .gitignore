@@ -7,3 +7,4 @@ niftis_extracted/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+*.pt
