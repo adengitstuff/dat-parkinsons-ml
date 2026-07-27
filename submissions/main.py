@@ -1,4 +1,6 @@
-"""Submission entry point for the DaT Parkinson's Challenge."""
+"""Submission entry point for the DaT Parkinson's Challenge.
+print N rows thing removed!
+"""
 import os
 import json
 from pathlib import Path
@@ -11,6 +13,8 @@ import torch
 from model import SimpleCNN3D
 from preprocess import resample_to_spacing, crop_or_pad_centered, normalize_percentile
 
+# Defaults to the real container path. Override with the DATA_DIR env var for local testing
+# (e.g. `DATA_DIR=~/niftis/smoke_test_extracted/smoke_test_data python main.py`)
 DATA_ROOT = Path(os.environ.get("DATA_DIR", "/code_execution/data")).expanduser()
 NIFTI_DIR = DATA_ROOT / "niftis"
 SUBMISSION_FORMAT_PATH = DATA_ROOT / "submission_format.csv"
@@ -62,25 +66,22 @@ def predict_one(model, coef, intercept, nifti_path):
 
 def main():
     submission_format = pd.read_csv(SUBMISSION_FORMAT_PATH)
-    print(f"Loaded submission_format.csv with {len(submission_format)} rows.")
+    print("Loaded submission_format.csv.")
 
     model = load_model()
     coef, intercept = load_calibration()
     print("Model and calibration loaded.")
 
     submission_format = submission_format.set_index("uid")
-    n = len(submission_format)
 
-    for i, uid in enumerate(submission_format.index):
+    for uid in submission_format.index:
         img_path = NIFTI_DIR / f"{uid}.nii.gz"
         prob = predict_one(model, coef, intercept, img_path)
         submission_format.loc[uid, "is_pathologic"] = prob
-        if (i + 1) % 100 == 0 or (i + 1) == n:
-            print(f"Processed {i + 1}/{n}")
 
     submission_format = submission_format.reset_index()
     submission_format.to_csv(WRITE_SUBMISSION_PATH, index=False)
-    print(f"Wrote predictions for {n} rows to {WRITE_SUBMISSION_PATH}")
+    print("Wrote predictions to submission.csv")
 
 
 if __name__ == "__main__":
